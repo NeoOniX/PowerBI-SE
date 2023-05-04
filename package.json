@@ -1,0 +1,80 @@
+{
+    "name": "powerbi-se",
+    "author": "Gauthier 'NeoOniX' Delzenne",
+    "description": "All-in-one search engine for PowerBI.",
+    "productName": "PowerBI SE",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "dotenv": "^16.0.3",
+        "electron-is-dev": "^2.0.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-icons": "^4.3.1",
+        "react-scripts": "5.0.0",
+        "electron-router-dom": "^1.0.5",
+        "puppeteer-core": "^19.8.5",
+        "puppeteer-in-electron": "^3.0.5",
+        "react-router-dom": "^6.10.0",
+        "react-select": "^5.7.0",
+        "typescript": "^4.9.4",
+        "web-vitals": "^2.1.4"
+    },
+    "devDependencies": {
+        "@testing-library/jest-dom": "^5.16.2",
+        "@testing-library/react": "^12.1.4",
+        "@testing-library/user-event": "^13.5.0",
+        "concurrently": "^7.0.0",
+        "cross-env": "^7.0.3",
+        "electron": "^22.0.0",
+        "electron-builder": "^22.14.13",
+        "electron-rebuild": "^3.2.9",
+        "eslint-plugin-react": "^7.32.2",
+        "sass": "^1.49.9",
+        "wait-on": "^6.0.1"
+    },
+    "main": "app/main.js",
+    "homepage": "./",
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "electron:serve": "concurrently -k \"cross-env BROWSER=none npm run start\" \"npm run electron:start\"",
+        "electron:build": "npm run build && electron-builder -c.extraMetadata.main=app/main.js",
+        "electron:start": "wait-on tcp:3000 && electron .",
+        "electron:main": "electron ."
+    },
+    "build": {
+        "extends": null,
+        "appId": "com.sncf.tcge-pbse",
+        "files": [
+            "app/*",
+            "app/**/*",
+            "build/**/*",
+            "node_modules/**/*",
+            "package.json"
+        ],
+        "directories": {
+            "buildResources": "assets"
+        }
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}

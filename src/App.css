@@ -1,0 +1,248 @@
+/* Global */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: #ebebeb;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #181818;
+}
+
+button {
+    border: none;
+    background-color: #050505;
+    color: white;
+    box-shadow: 0 0 30px rgb(46, 46, 46);
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 3px;
+}
+
+button:hover {
+    background-color: #101010;
+}
+
+/* Utils */
+
+.app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.h_center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.v_center {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+}
+
+.separator {
+    margin: 10px 25px;
+    height: 0;
+    border: 1px solid #303030;
+}
+
+.as_text_input {
+    background-color: #111111;
+    padding: 10px;
+    border-radius: 5px;
+    color: #cecece;
+}
+
+.searchbox div div * {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+}
+
+/* Login */
+
+.login > h1,
+.login > h2,
+.login > button {
+    max-width: 50%;
+    text-align: center;
+    margin: 15px;
+}
+
+/* Navbar */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: max(250px, 20%);
+    height: 100vh;
+    background-color: #1c1c1c;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.navbar button {
+    font-size: 16px;
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar button:disabled {
+    background-color: #101010;
+}
+
+.navbar button svg {
+    height: 32px;
+    width: 32px;
+}
+
+/* Content */
+
+.content {
+    padding: 15px;
+    flex: 1;
+    align-items: stretch;
+}
+
+.content h1 {
+    margin-bottom: 10px;
+}
+
+/* Main */
+
+.main ul {
+    margin: 10px;
+    list-style-type: none;
+}
+
+.main ul li {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.main ul li button {
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Settings */
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.settings > div {
+    text-align: start;
+    margin: 10px;
+}
+
+.settings > div > h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.settings > div > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.settings > div > div > span {
+    flex: 1;
+    margin: 5px 10px;
+}
+
+.settings > div > div > button {
+    box-shadow: none;
+}
+
+/* Search */
+
+.search_header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search_header > div {
+    height: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    margin: 2px;
+    background-color: #1f1f1f;
+    border-radius: 5px;
+}
+
+.search_header > div > .search_filter {
+    margin-left: 5px;
+    flex: 1;
+}
+
+.search_header > div > input {
+    padding: 5px;
+    border: 2px solid white;
+    border-radius: 3px;
+    color: black;
+}
+
+table.search {
+    margin-top: 10px;
+}
+
+table.search > thead {
+    background-color: #1f1f1f;
+}
+
+table.search > thead > tr > th {
+    padding: 10px 0;
+}
+
+table.search > tbody {
+    background-color: #1c1c1c;
+}
+
+table.search > tbody > tr > td {
+    padding: 5px 0;
+}
+
+table.search > tbody > tr > td > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+table.search > tbody > tr > td > div > * {
+    padding: 2px;
+}

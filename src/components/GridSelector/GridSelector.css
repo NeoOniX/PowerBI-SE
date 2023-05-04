@@ -1,0 +1,35 @@
+li > div.grid-selector {
+    margin-top: 10px;
+}
+
+li:only-child > div.grid-selector {
+    margin-top: 0;
+}
+
+div.grid-selector {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    margin-top: 10px;
+}
+
+div.grid-selector > .m10 {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+div.grid-selector > div.m10 {
+    flex: 1;
+}
+
+div.grid-selector button {
+    width: 30px !important;
+    height: 30px;
+}
+
+div.grid-selector div div * {
+    color: black;
+}

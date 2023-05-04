@@ -1,0 +1,41 @@
+.grid {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    background-color: #0f0f0f;
+}
+
+.grid ul {
+    list-style-type: none;
+}
+
+.grid h2 {
+    margin: 5px 5px 5px 55px;
+}
+
+.grid > .top {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: stretch;
+}
+
+.grid > .top .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.grid > .top > .delete {
+    margin: 1px;
+    width: 50px;
+    height: 30px;
+    border-radius: 0 5px 0 0;
+    box-shadow: none;
+}
+
+.delete:hover {
+    background-color: red;
+}
