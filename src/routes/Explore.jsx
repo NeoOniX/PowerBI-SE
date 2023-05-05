@@ -58,7 +58,7 @@ const Explore = props => {
                 out2[w.PageName] = w;
             });
         }
-        out = search.length !== 0 ? Object.values(out2) : data.Exports;
+        out = search.length !== 0 ? Object.values(out2) : out;
 
         setShow({ Anomalies: data.Anomalies, Exports: out });
     }, [currentSelection, data, search]);
