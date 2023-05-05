@@ -47,7 +47,7 @@
     },
     "build": {
         "extends": null,
-        "appId": "com.sncf.tcge-pbse",
+        "appId": "me.onix.powerbi-se",
         "files": [
             "app/*",
             "app/**/*",
