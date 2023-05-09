@@ -70,11 +70,13 @@ const readPage = async (page, content) => {
     // Screenshot
     let s = "";
     try {
-        const sElem =
-            content.type === "Tableau de bord"
-                ? await page.$(".dashboard")
-                : await page.$(".displayAreaViewport");
-        s = await sElem.screenshot({ type: "jpeg", encoding: "base64", quality: 10 });
+        const sElem = await page.$("#content[role=main]");
+        s = await sElem.screenshot({
+            type: "jpeg",
+            encoding: "base64",
+            quality: 10,
+            clip: { x: 30, y: 25, height: 747, width: 1390 },
+        });
     } catch (error) {
         /* empty */
     }
