@@ -25,9 +25,12 @@ class Crawler {
             const nameElem = await page.waitForSelector("h1.fluentListHeaderTitle");
             workspace.name = await (await nameElem.getProperty("textContent")).jsonValue();
 
-            const iconElem = await page.waitForSelector("group-icon-modern img.ng-star-inserted", {
-                timeout: 500,
-            });
+            const iconElem = await page.waitForSelector(
+                "img.tri-h-full.tri-w-full.ng-star-inserted",
+                {
+                    timeout: 500,
+                }
+            );
             workspace.icon = await (await iconElem.getProperty("src")).jsonValue();
         } catch (error) {
             workspace.icon = null;

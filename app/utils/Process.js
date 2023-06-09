@@ -67,7 +67,7 @@ class Process {
         for (const workspace of this.workspaces) {
             await Crawler.crawl(this.page, workspace);
             await Scraper.scrap(this.page, workspace);
-            Uploader.upload(Config.getAppOptions().uploadPath, workspace);
+            Uploader.upload(workspace);
         }
 
         return this;

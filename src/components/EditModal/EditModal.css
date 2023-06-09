@@ -1,0 +1,151 @@
+/* Global */
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(71, 71, 71, 0.849);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.frame {
+    border-radius: 5px;
+    height: 80vh;
+    width: 80vw;
+    background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: white;
+}
+
+.title {
+    font-size: 18px;
+    text-decoration: underline;
+}
+
+/* Top */
+
+.frame_top {
+    height: 32px;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    border-bottom: 1px solid var(--text-color);
+}
+
+.frame_top > span,
+.frame_top > button {
+    overflow: hidden;
+}
+
+.frame_top > span {
+    margin: 0 5px;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    flex: 1;
+    text-align: center;
+}
+
+.frame_top > button {
+    padding: 5px 50px;
+    margin-right: 25px;
+    box-shadow: none;
+    border-radius: 0;
+    background-color: var(--button);
+    color: white;
+    border-right: 1px solid var(--text-color);
+    border-left: 1px solid var(--text-color);
+}
+
+.frame_top > button:hover {
+    background-color: var(--button-hover);
+}
+
+.frame_top > button.close {
+    width: 50px;
+    margin: 0;
+    padding: 5px 10px;
+    border-radius: 0 4.5px 0 0;
+    background-color: #e01212;
+    color: white;
+    border: none;
+}
+
+.frame_top > button.close:hover {
+    background-color: red;
+}
+
+/* Content */
+
+.frame_content {
+    background-color: var(--background-color);
+    z-index: 1;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    text-align: start;
+}
+
+.frame_content > * {
+    margin: 5px 0;
+}
+
+.frame_content > h3 {
+    margin-top: 25px;
+}
+
+.frame_content > h3:first-child {
+    margin-top: 0;
+}
+
+.frame_content > ul > li {
+    width: 100%;
+    margin: 5px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    background-color: #00000015;
+    padding: 5px;
+}
+
+.frame_content > ul > li > .spacing {
+    flex: 1;
+}
+
+.frame_content > ul > li > span {
+    margin-right: 5px;
+}
+
+.frame_content > ul > li > button {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    padding: 0;
+    background: unset;
+    border-radius: 50%;
+}
+
+.frame_content > ul > li > button > svg {
+    fill: red;
+    height: 100%;
+    width: 100%;
+    background: radial-gradient(#fff, #fff 50%, transparent 50%);
+}

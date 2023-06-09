@@ -116,7 +116,12 @@ class WorkspaceDiscoverer {
                         : await (await icon.getProperty("src")).jsonValue();
 
                     if (!out.find(w => w.name === name))
-                        out.push({ name: name, icon: iconSrc, contents: [] });
+                        out.push({
+                            name: name,
+                            icon: iconSrc,
+                            contents: [],
+                            paths: { exports: [], anomalies: [] },
+                        });
                 }
             }
 
@@ -209,6 +214,7 @@ class WorkspaceDiscoverer {
                         type: c.type,
                     };
                 }),
+                paths: w.paths,
             };
         });
         fs.writeFileSync(path, JSON.stringify(out, null, 4));

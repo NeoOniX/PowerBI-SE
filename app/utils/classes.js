@@ -25,9 +25,18 @@
  * @property {Array<Content>} contents Workspace contents
  * @property {boolean} screenshot Does the scraper screenshot this workspace
  * @property {boolean} contentLevel Are the settings content-specific
+ * @property {Paths} paths Workspace specific paths (complementary to global paths)
  *
  *
  * CONFIG CLASSES
+ *
+ * @typedef {Object} Path
+ * @property {string} path Path location on file system
+ * @property {string} format File format (complete name and extension)
+ *
+ * @typedef {Object} Paths
+ * @property {Array<Path>} exports Global exports paths
+ * @property {Array<Path>} anomalies Global anomalies paths
  *
  * @typedef {Array<Workspace>} ProcessCfg
  *
@@ -46,5 +55,5 @@
  * @property {string} name Workspace Name
  * @property {string | null} icon Workspace icon URL
  * @property {Array<ContentDsc>} contents Workspace contents
- *
+ * @property {import("./Config").Paths} paths Workspace specific paths (complementary to global paths)
  */

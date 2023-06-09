@@ -41,6 +41,12 @@ contextBridge.exposeInMainWorld("electron", {
             listener(args);
         });
     },
+    addWorkspaceExport(workspace) {
+        ipcRenderer.send("start-add-workspace-export", workspace);
+    },
+    addWorkspaceAnomalie(workspace) {
+        ipcRenderer.send("start-add-workspace-anomalie", workspace);
+    },
     // App Options
     getAppOptions() {
         ipcRenderer.send("start-get-app-options");
@@ -48,8 +54,11 @@ contextBridge.exposeInMainWorld("electron", {
     setAppOptions(options) {
         ipcRenderer.send("start-set-app-options", options);
     },
-    setExportPath() {
-        ipcRenderer.send("start-set-export-path");
+    addGlobalExportPath() {
+        ipcRenderer.send("start-add-global-export");
+    },
+    addGlobalAnomaliePath() {
+        ipcRenderer.send("start-add-global-anomalie");
     },
     addOnAppOptionsReceivedListener(listener) {
         ipcRenderer.on("res-app-options", (event, args) => {

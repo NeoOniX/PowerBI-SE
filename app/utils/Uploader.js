@@ -1,4 +1,7 @@
 const fs = require("fs");
+const Config = require("./Config");
+const regexpf = require("../shared/regexp").format;
+const { join } = require("path");
 
 /**
  * @class
@@ -7,12 +10,11 @@ const fs = require("fs");
 class Uploader {
     /**
      * Upload the data for `workspace`
-     * @param {string} path Export path
      * @param {Workspace} workspace
      * @public
      * @static
      */
-    static upload(path, workspace) {
+    static upload(workspace) {
         try {
             const out_a = [];
             const out_c = [];
@@ -49,22 +51,79 @@ class Uploader {
                 }
             }
 
+            // Date vars
             const date = new Date();
 
-            // For some reason date.getMonth is on [0, ..., 11]
-            // prettier-ignore
-            const n = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getHours()}h-${date.getMinutes()}m-${date.getSeconds()}s_${workspace.id}`;
+            const fdate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+            const ftime = `${date.getHours()}h-${date.getMinutes()}m-${date.getSeconds()}s`;
 
-            fs.writeFileSync(
-                `${path}/Exports/pbse_exports_${n}.json`,
-                JSON.stringify(out_c, null, 4),
-                "utf8"
-            );
-            fs.writeFileSync(
-                `${path}/Anomalies/pbse_anomalies_${n}.json`,
-                JSON.stringify(out_a, null, 4),
-                "utf8"
-            );
+            // Global exports
+            for (const p of Config.getAppOptions().globalPaths.exports) {
+                fs.writeFileSync(
+                    join(
+                        p.path,
+                        regexpf(p.format, {
+                            date: fdate,
+                            time: ftime,
+                            workspaceId: workspace.id,
+                            workspaceName: workspace.name,
+                        })
+                    ),
+                    JSON.stringify(out_c, null, 4),
+                    "utf8"
+                );
+            }
+
+            // Global anomalies
+            for (const p of Config.getAppOptions().globalPaths.anomalies) {
+                fs.writeFileSync(
+                    join(
+                        p.path,
+                        regexpf(p.format, {
+                            date: fdate,
+                            time: ftime,
+                            workspaceId: workspace.id,
+                            workspaceName: workspace.name,
+                        })
+                    ),
+                    JSON.stringify(out_a, null, 4),
+                    "utf8"
+                );
+            }
+
+            // Workspace exports
+            for (const p of workspace.paths.exports) {
+                fs.writeFileSync(
+                    join(
+                        p.path,
+                        regexpf(p.format, {
+                            date: fdate,
+                            time: ftime,
+                            workspaceId: workspace.id,
+                            workspaceName: workspace.name,
+                        })
+                    ),
+                    JSON.stringify(out_c, null, 4),
+                    "utf8"
+                );
+            }
+
+            // Workspace anomalies
+            for (const p of workspace.paths.anomalies) {
+                fs.writeFileSync(
+                    join(
+                        p.path,
+                        regexpf(p.format, {
+                            date: fdate,
+                            time: ftime,
+                            workspaceId: workspace.id,
+                            workspaceName: workspace.name,
+                        })
+                    ),
+                    JSON.stringify(out_a, null, 4),
+                    "utf8"
+                );
+            }
         } catch (error) {
             console.log(error);
         }

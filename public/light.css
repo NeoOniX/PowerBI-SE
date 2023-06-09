@@ -1,0 +1,13 @@
+:root {
+    --background-color: #e6e6e6;
+    --text-color: black;
+
+    --button: #a1a1a1;
+    --button-hover: #a7a7a7;
+
+    --scroll: #a1a1a1;
+    --scroll-hover: #a7a7a7;
+
+    --shadow: #bebebe;
+    --light: #b6b6b6;
+}

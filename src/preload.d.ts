@@ -19,10 +19,21 @@ declare global {
         contents: Array<Content>;
     }
 
+    interface Path {
+        path: string;
+        format: string;
+    }
+
+    interface Paths {
+        exports: Array<Path>;
+        anomalies: Array<Path>;
+    }
+
     interface AppOptions {
-        uploadPath: string;
+        globalPaths: Paths;
         showWindows: boolean;
         showDiscovery: boolean;
+        lightTheme: boolean;
     }
 
     interface ExportData {
@@ -64,10 +75,13 @@ declare global {
             writeConfig(): void;
             updateConfig(config: Array<Array<Workspace>>): void;
             setConfigReceivedListener(listener: (config: Array<Array<Workspace>>) => void): void;
+            addWorkspaceExport(workspace: Workspace): void;
+            addWorkspaceAnomalie(workspace: Workspace): void;
             // App Options
             getAppOptions(): void;
             setAppOptions(options: AppOptions): void;
-            setExportPath(): void;
+            addGlobalExportPath(): void;
+            addGlobalAnomaliePath(): void;
             addOnAppOptionsReceivedListener(listener: (config: AppOptions) => void): void;
             // Workspace Discovery
             startWorkspacesDiscovery(): void;

@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import "./GridElement.css";
+import { MdCancel } from "react-icons/md";
+import { FcSupport } from "react-icons/fc";
 
 const GridElement = props => {
     return (
@@ -13,8 +15,11 @@ const GridElement = props => {
                 />
                 <span>{props.workspace.name}</span>
             </div>
-            <button className="delete" onClick={props.removeWorkspace}>
-                x
+            <button onClick={() => props.setEdit(props.workspace)}>
+                <FcSupport />
+            </button>
+            <button className="delete_element" onClick={props.removeWorkspace}>
+                <MdCancel />
             </button>
             {/* <button onClick={() => window.electron.crawl(props.workspace.id)}>C</button> */}
         </div>

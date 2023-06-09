@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import GridElement from "../GridElement/GridElement";
 import GridSelector from "../GridSelector/GridSelector";
 import "./Grid.css";
+import { RxCross2 } from "react-icons/rx";
 
 const Grid = props => {
     return (
@@ -13,7 +14,7 @@ const Grid = props => {
                     <h2>Processus N°{props.index + 1}</h2>
                 </div>
                 <button onClick={() => props.removeProcess(props.index)} className="delete">
-                    X
+                    <RxCross2 />
                 </button>
             </div>
             <ul>
@@ -23,6 +24,7 @@ const Grid = props => {
                             <GridElement
                                 workspace={w}
                                 removeWorkspace={() => props.removeWorkspace(props.index, w)}
+                                setEdit={props.setEdit}
                             />
                         </li>
                     );

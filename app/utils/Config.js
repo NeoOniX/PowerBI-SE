@@ -4,10 +4,27 @@ const { app, dialog } = require("electron");
 
 const path = join(app.getPath("documents"), "PowerBI SE");
 
+/**
+ * @type {AppOptions}
+ */
 const defaultAppOptions = {
     showWindows: false,
     showDiscovery: false,
-    uploadPath: join(path, "/data/"),
+    globalPaths: {
+        exports: [
+            {
+                path: join(path, "/data/"),
+                format: "pbse_exports_{date}_{time}_{workspaceId}.json",
+            },
+        ],
+        anomalies: [
+            {
+                path: join(path, "/data/"),
+                format: "pbse_anomalies_{date}_{time}_{workspaceId}.json",
+            },
+        ],
+    },
+    lightTheme: false,
 };
 
 /**
@@ -19,7 +36,8 @@ const defaultAppOptions = {
  * @typedef {Object} AppOptions
  * @property {boolean} showWindows Are the windows shown
  * @property {boolean} showDiscovery Is the discovery window shown
- * @property {String} uploadPath Path to upload the files
+ * @property {boolean} lightTheme Is the light theme used
+ * @property {Paths} globalPaths Global paths
  */
 
 /**
@@ -66,28 +84,81 @@ class Config {
     }
 
     /**
-     * Open a file dialog to select the export path
+     * Open a file dialog to add a new data export path
      * @returns {Promise<AppOptions>}
      * @public
      * @static
      * @async
      */
-    static async setExportPath() {
+    static async addExportPath() {
         try {
             const ret = await dialog.showOpenDialog({
-                defaultPath: this.appOptions.uploadPath,
+                defaultPath: path,
                 properties: ["openDirectory", "dontAddToRecent", "createDirectory"],
             });
             if (!ret.canceled) {
                 const options = this.getAppOptions();
-                options.uploadPath = ret.filePaths[0];
+                options.globalPaths.exports.push({
+                    path: ret.filePaths[0],
+                    format: "pbse_exports_{date}_{time}_{workspaceId}.json",
+                });
                 this.setAppOptions(options);
             }
         } catch (error) {
             /* empty */
         } finally {
-            this.checkFolders();
             return this.getAppOptions();
+        }
+    }
+
+    /**
+     * Open a file dialog to add a new anomalies export path
+     * @returns {Promise<AppOptions>}
+     * @public
+     * @static
+     * @async
+     */
+    static async addAnomaliePath() {
+        try {
+            const ret = await dialog.showOpenDialog({
+                defaultPath: path,
+                properties: ["openDirectory", "dontAddToRecent", "createDirectory"],
+            });
+            if (!ret.canceled) {
+                const options = this.getAppOptions();
+                options.globalPaths.anomalies.push({
+                    path: ret.filePaths[0],
+                    format: "pbse_anomalies_{date}_{time}_{workspaceId}.json",
+                });
+                this.setAppOptions(options);
+            }
+        } catch (error) {
+            /* empty */
+        } finally {
+            return this.getAppOptions();
+        }
+    }
+
+    /**
+     * Open a file dialog to add a new workspace-specific export path
+     * @returns {Promise<string>}
+     * @public
+     * @static
+     * @async
+     */
+    static async addWorkspacePath() {
+        try {
+            const ret = await dialog.showOpenDialog({
+                defaultPath: path,
+                properties: ["openDirectory", "dontAddToRecent", "createDirectory"],
+            });
+            if (!ret.canceled) {
+                return ret.filePaths[0];
+            } else {
+                return null;
+            }
+        } catch (error) {
+            /* empty */
         }
     }
 
@@ -102,14 +173,6 @@ class Config {
         for (const folder of folders) {
             if (!fs.existsSync(join(path, folder))) {
                 fs.mkdirSync(join(path, folder), { recursive: true });
-            }
-        }
-
-        // Export folder
-        const subfolders = ["/Anomalies/", "/Exports/"];
-        for (const folder of subfolders) {
-            if (!fs.existsSync(join(this.getAppOptions().uploadPath, folder))) {
-                fs.mkdirSync(join(this.getAppOptions().uploadPath, folder), { recursive: true });
             }
         }
     }

@@ -1,29 +1,53 @@
+/* Scroll */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px 0 0 5px;
+    background-color: var(--scroll);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scroll-hover);
+}
+
 /* Global */
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    color: #ebebeb;
+    color: var(--text-color);
     font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
-    background-color: #181818;
+    background-color: var(--background-color);
+    overflow: hidden;
 }
 
 button {
     border: none;
-    background-color: #050505;
-    color: white;
-    box-shadow: 0 0 30px rgb(46, 46, 46);
+    background-color: var(--button);
+    color: var(--text-color);
+    box-shadow: 0 0 30px var(--shadow);
     padding: 15px;
     font-size: 18px;
     border-radius: 3px;
 }
 
 button:hover {
-    background-color: #101010;
+    background-color: var(--button-hover);
+}
+
+button .m10 {
+    margin-right: 10px;
 }
 
 /* Utils */
@@ -49,22 +73,24 @@ button:hover {
 }
 
 .container {
+    height: 100vh;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     text-align: center;
 }
 
 .separator {
     margin: 10px 25px;
     height: 0;
-    border: 1px solid #303030;
+    border: 1px solid var(--shadow);
 }
 
 .as_text_input {
-    background-color: #111111;
+    background-color: #11111120;
     padding: 10px;
     border-radius: 5px;
-    color: #cecece;
+    color: var(--text-color);
+    border: none;
 }
 
 .searchbox div div * {
@@ -72,6 +98,11 @@ button:hover {
     align-items: center;
     justify-content: center;
     color: black;
+}
+
+.description {
+    font-style: italic;
+    font-size: 16px;
 }
 
 /* Login */
@@ -86,17 +117,58 @@ button:hover {
 
 /* Navbar */
 
-.navbar {
+.bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+}
+
+.bar > * {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.bar .icon {
+    flex: 0 0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bar .icon > * {
+    margin: 0;
+    padding: 0;
+    height: 30px;
+    width: 30px;
+}
+
+.bar svg {
+    margin-right: 10px;
+    height: 30px;
+    width: 30px;
+}
+
+.bar > .separator {
+    flex: 0;
+    width: 2;
+    height: 20px;
+}
+
+/* .navbar {
     position: sticky;
     top: 0;
     left: 0;
     width: max(250px, 20%);
-    height: 100vh;
+    width: 100vw;
     background-color: #1c1c1c;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
     padding: 10px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: stretch;
 }
 
@@ -115,13 +187,15 @@ button:hover {
 .navbar button svg {
     height: 32px;
     width: 32px;
-}
+} */
 
 /* Content */
 
 .content {
-    padding: 15px;
     flex: 1;
+    overflow-y: auto;
+    margin-bottom: 5px;
+    padding: 15px;
     align-items: stretch;
 }
 
@@ -164,14 +238,59 @@ button:hover {
 }
 
 .settings > div > h2 {
-    margin-bottom: 10px;
-    font-size: 18px;
+    margin-bottom: 8px;
+    font-size: 20px;
 }
 
-.settings > div > div {
+.settings > div > .description {
+    margin-bottom: 15px;
+}
+
+.settings > div > div.exports {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.settings > div > div.exports > div {
+    width: 100%;
+    display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    background-color: #00000025;
+    padding: 5px;
+    margin: 5px 0;
+}
+
+.settings > div > div.exports > div > .spacing {
+    flex: 1;
+}
+
+.settings > div > div.exports > div > span,
+.settings > div > div.exports > div > input {
+    margin: 5px 15px 5px 5px;
+}
+
+.settings > div > div.exports > div > input {
+    width: 100%;
+}
+
+.settings > div > div.exports > div > button {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    padding: 0;
+    background: unset;
+    border-radius: 50%;
+}
+
+.settings > div > div.exports > div > button > svg {
+    fill: red;
+    height: 100%;
+    width: 100%;
+    background: radial-gradient(#fff, #fff 50%, transparent 50%);
 }
 
 .settings > div > div > span {
@@ -181,68 +300,5 @@ button:hover {
 
 .settings > div > div > button {
     box-shadow: none;
-}
-
-/* Search */
-
-.search_header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.search_header > div {
-    height: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px;
-    margin: 2px;
-    background-color: #1f1f1f;
-    border-radius: 5px;
-}
-
-.search_header > div > .search_filter {
-    margin-left: 5px;
-    flex: 1;
-}
-
-.search_header > div > input {
-    padding: 5px;
-    border: 2px solid white;
-    border-radius: 3px;
-    color: black;
-}
-
-table.search {
-    margin-top: 10px;
-}
-
-table.search > thead {
-    background-color: #1f1f1f;
-}
-
-table.search > thead > tr > th {
-    padding: 10px 0;
-}
-
-table.search > tbody {
-    background-color: #1c1c1c;
-}
-
-table.search > tbody > tr > td {
-    padding: 5px 0;
-}
-
-table.search > tbody > tr > td > div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-
-table.search > tbody > tr > td > div > * {
-    padding: 2px;
+    margin-bottom: 10px;
 }

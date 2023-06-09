@@ -4,7 +4,6 @@ const puppeteer = require("puppeteer-core");
 const { join } = require("path");
 const isDev = require("electron-is-dev");
 const { WorkspaceDiscoverer, Crawler, Config, Process, DataReader } = require("./utils");
-const { createURLRoute, createFileRoute } = require("electron-router-dom");
 
 // Remove security warnings
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
@@ -12,13 +11,14 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 // Disable Hardware Acceleration for Offscreen rendering
 app.disableHardwareAcceleration();
 
-// Router setup
-const mainDevServerURL = createURLRoute("http://localhost:3000", "main");
-const mainFileRoute = createFileRoute(join(__dirname, "../build/index.html"), "main");
+// Single instance lock
+const instanceLock = app.requestSingleInstanceLock();
 
 let workspaces = [];
 let config = [];
 const processes = [];
+
+let mainWindow = null;
 
 const init = async () => {
     // PIE Setup
@@ -33,7 +33,7 @@ const main = async () => {
     const browser = await pie.connect(app, puppeteer);
 
     // Main page
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         height: 810,
         width: 1440,
         backgroundColor: "#000000",
@@ -51,10 +51,12 @@ const main = async () => {
     // mainWindow.webContents.openDevTools();
 
     // Load main page
-    isDev ? mainWindow.loadURL(mainDevServerURL) : mainWindow.loadFile(...mainFileRoute);
+    mainWindow.loadURL(
+        isDev ? "http://localhost:3000" : `file://${join(__dirname, "../build/index.html")}`
+    );
 
     // IPC Setup
-    ipcMain.on("start-pbi-login", () => login(mainWindow, browser));
+    ipcMain.on("start-pbi-login", () => login(browser));
     ipcMain.on("start-single-crawl", (event, arg) => singleCrawl(browser, arg));
     ipcMain.on("start-get-data", () => mainWindow.webContents.send("res-data", DataReader.read()));
     ipcMain.on("open-in-browser", (event, arg) => shell.openExternal(arg));
@@ -63,11 +65,11 @@ const main = async () => {
     ipcMain.on("start-workspaces-get", () =>
         mainWindow.webContents.send("res-workspaces-discovery", workspaces)
     );
-    ipcMain.on("start-workspaces-discovery", () => startWorkspacesDiscovery(mainWindow, browser));
-    ipcMain.on("stop-workspaces-discovery", () => stopWorkspacesDiscovery(mainWindow));
+    ipcMain.on("start-workspaces-discovery", () => startWorkspacesDiscovery(browser));
+    ipcMain.on("stop-workspaces-discovery", () => stopWorkspacesDiscovery());
 
     // IPC Setup - Process
-    ipcMain.on("start-process", () => startProcess(mainWindow, browser));
+    ipcMain.on("start-process", () => startProcess(browser));
     ipcMain.on("stop-process", stopProcess);
 
     // IPC Setup - AppOptions
@@ -78,8 +80,11 @@ const main = async () => {
         Config.setAppOptions(arg);
         mainWindow.webContents.send("res-app-options", Config.getAppOptions());
     });
-    ipcMain.on("start-set-export-path", async () => {
-        mainWindow.webContents.send("res-app-options", await Config.setExportPath());
+    ipcMain.on("start-add-global-export", async () => {
+        mainWindow.webContents.send("res-app-options", await Config.addExportPath());
+    });
+    ipcMain.on("start-add-global-anomalie", async () => {
+        mainWindow.webContents.send("res-app-options", await Config.addAnomaliePath());
     });
 
     // IPC Setup - Config
@@ -94,14 +99,43 @@ const main = async () => {
         config = arg;
         mainWindow.webContents.send("main-config-received", config);
     });
+    ipcMain.on("start-add-workspace-export", async (event, arg) => {
+        const p = await Config.addWorkspacePath();
+        if (p === null) return;
+        config.forEach(proc => {
+            proc.forEach(w => {
+                if (w.name === arg.name) {
+                    w.paths.exports.push({
+                        path: p,
+                        format: "pbse_exports_{date}_{time}_{workspaceId}.json",
+                    });
+                }
+            });
+        });
+        mainWindow.webContents.send("main-config-received", config);
+    });
+    ipcMain.on("start-add-workspace-anomalie", async (event, arg) => {
+        const p = await Config.addWorkspacePath();
+        if (p === null) return;
+        config.forEach(proc => {
+            proc.forEach(w => {
+                if (w.name === arg.name) {
+                    w.paths.anomalies.push({
+                        path: p,
+                        format: "pbse_anomalies_{date}_{time}_{workspaceId}.json",
+                    });
+                }
+            });
+        });
+        mainWindow.webContents.send("main-config-received", config);
+    });
 };
 
 /**
  * Start configured processes
- * @param {BrowserWindow} mainWindow
  * @param {puppeteer.Browser} browser
  */
-const startProcess = (mainWindow, browser) => {
+const startProcess = browser => {
     for (const p of config) {
         if (p.length === 0) continue;
         const proc = new Process(p);
@@ -137,10 +171,9 @@ const stopProcess = () => {
 
 /**
  * Open the login window
- * @param {BrowserWindow} mainWindow
  * @param {puppeteer.Browser} browser
  */
-const login = async (mainWindow, browser) => {
+const login = async browser => {
     // Login window
     const loginWindow = new BrowserWindow({
         height: 650,
@@ -157,6 +190,7 @@ const login = async (mainWindow, browser) => {
 
     loginWindow.on("close", () => {
         loginWindow.destroy();
+        if (mainWindow.isMinimized()) mainWindow.restore();
         mainWindow.focus();
         isClosed = true;
     });
@@ -167,7 +201,7 @@ const login = async (mainWindow, browser) => {
     let hasLoaded = false;
     while (!hasLoaded) {
         try {
-            await page.goto("https://app.powerbi.com/home");
+            await page.goto("https://app.powerbi.com/home", { waitUntil: "networkidle2" });
             hasLoaded = true;
         } catch (e) {
             if (isClosed) return;
@@ -177,7 +211,7 @@ const login = async (mainWindow, browser) => {
     hasLoaded = false;
     while (!hasLoaded) {
         try {
-            await page.waitForSelector("span.pbi-fcl-np.ng-star-inserted", { timeout: 10000 });
+            await page.waitForSelector("span.pbi-fcl-np.ng-star-inserted", { timeout: 0 });
             hasLoaded = true;
         } catch (e) {
             if (isClosed) return;
@@ -187,9 +221,7 @@ const login = async (mainWindow, browser) => {
     // Get profile name
     let profileButton = null;
     while (!profileButton) {
-        profileButton = await page.$(
-            "button.menuButton.userInfoButton.pbi-bgc-tp.pbi-fcl-np.pbi-bcl-tp.pbi-bgc-ts-h.pbi-bgc-ts-f"
-        );
+        profileButton = await page.$("button.userInfoButton");
         if (isClosed) return;
     }
 
@@ -211,10 +243,9 @@ const login = async (mainWindow, browser) => {
 
 /**
  * Start the workspaces discovery process
- * @param {BrowserWindow} mainWindow
  * @param {puppeteer.Browser} browser
  */
-const startWorkspacesDiscovery = async (mainWindow, browser) => {
+const startWorkspacesDiscovery = async browser => {
     try {
         const tmp = await WorkspaceDiscoverer.discover(pie, browser);
         if (tmp && tmp.length !== 0) {
@@ -228,9 +259,8 @@ const startWorkspacesDiscovery = async (mainWindow, browser) => {
 
 /**
  * Start the workspaces discovery process
- * @param {BrowserWindow} mainWindow
  */
-const stopWorkspacesDiscovery = mainWindow => {
+const stopWorkspacesDiscovery = () => {
     WorkspaceDiscoverer.stop();
     mainWindow.webContents.send("res-workspaces-discovery", workspaces);
 };
@@ -250,6 +280,17 @@ const singleCrawl = async (browser, workspaceID) => {
     WorkspaceDiscoverer.write(workspaces);
 };
 
-app.once("ready", main);
+if (!instanceLock) {
+    app.quit();
+} else {
+    app.on("second-instance", _ => {
+        if (mainWindow && mainWindow instanceof BrowserWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.focus();
+        }
+    });
 
-init();
+    app.once("ready", main);
+
+    init();
+}

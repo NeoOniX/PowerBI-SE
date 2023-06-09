@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import IconOption from "../IconOption/IconOption";
 import Select from "react-select";
 import "./GridSelector.css";
+import { FcPlus } from "react-icons/fc";
 
 const GridSelector = props => {
     const options = props.entries.map(workspace => {
@@ -23,7 +24,7 @@ const GridSelector = props => {
                 noOptionsMessage={() => "Aucun"}
             />
             <button className="m10" onClick={() => props.add(props.index, currentSelection)}>
-                +
+                <FcPlus />
             </button>
         </div>
     );

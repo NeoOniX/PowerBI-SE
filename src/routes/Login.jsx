@@ -1,15 +1,6 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 
 const Login = () => {
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        window.electron.addLoginListener(uname => {
-            navigate("/main");
-        });
-    });
-
     return (
         <div className="h_center v_center login">
             <h1>Bienvenue !</h1>
