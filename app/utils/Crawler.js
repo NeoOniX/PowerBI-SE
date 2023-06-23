@@ -22,7 +22,7 @@ class Crawler {
 
         // Get workspace info
         try {
-            const nameElem = await page.waitForSelector("h1.fluentListHeaderTitle");
+            const nameElem = await page.waitForSelector("h1.title");
             workspace.name = await (await nameElem.getProperty("textContent")).jsonValue();
 
             const iconElem = await page.waitForSelector(
