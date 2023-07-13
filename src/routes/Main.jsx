@@ -9,7 +9,7 @@ import UpdateModal from "../components/UpdateModal/UpdateModal";
 const Main = props => {
     return (
         <>
-            {update !== "hidden" && (
+            {props.update !== "hidden" && (
                 <UpdateModal update={props.update} setUpdate={props.setUpdate} />
             )}
             {props.edit !== null && (
