@@ -4,10 +4,14 @@ import Grid from "../components/Grid/Grid";
 import { FcPlus, FcReadingEbook, FcSettings } from "react-icons/fc";
 import { BiMoon, BiSun } from "react-icons/bi";
 import PreviewModal from "../components/EditModal/EditModal";
+import UpdateModal from "../components/UpdateModal/UpdateModal";
 
 const Main = props => {
     return (
         <>
+            {update !== "hidden" && (
+                <UpdateModal update={props.update} setUpdate={props.setUpdate} />
+            )}
             {props.edit !== null && (
                 <PreviewModal edit={props.edit} setEdit={props.setEdit} config={props.config} />
             )}

@@ -94,6 +94,11 @@ declare global {
             setDataListener(listener: (data: Data) => void): void;
             // External open
             openInBrowser(url: string): void;
+            // Update
+            setUpdateAvailableListener(listener: () => void): void;
+            setUpdateDownloadedListener(listener: () => void): void;
+            downloadUpdate(): void;
+            restartUpdate(): void;
         };
     }
 }

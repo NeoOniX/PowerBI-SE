@@ -154,6 +154,18 @@ const App = () => {
         }
     }, [config]);
 
+    // Update
+    const [update, setUpdate] = useState("hidden");
+    useEffect(() => {
+        window.electron.setUpdateAvailableListener(() => {
+            setUpdate("visible");
+        });
+
+        window.electron.setUpdateDownloadedListener(() => {
+            setUpdate("downloaded");
+        });
+    });
+
     // Wait for AppOptions to load...
 
     if (appOptions === undefined) return <></>;
@@ -181,6 +193,8 @@ const App = () => {
                     entries={entries}
                     edit={edit}
                     setEdit={setEdit}
+                    update={update}
+                    setUpdate={setUpdate}
                 />
             )}
             {page === "settings" && (

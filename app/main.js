@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, shell } = require("electron");
+const { autoUpdater } = require("electron-updater");
 const pie = require("puppeteer-in-electron");
 const puppeteer = require("puppeteer-core");
 const { join } = require("path");
@@ -13,6 +14,25 @@ app.disableHardwareAcceleration();
 
 // Single instance lock
 const instanceLock = app.requestSingleInstanceLock();
+
+// AutoUpdater Setup
+
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = false;
+
+autoUpdater.on("update-available", () => {
+    if (mainWindow && mainWindow instanceof BrowserWindow) {
+        mainWindow.webContents.send("update-available");
+    }
+});
+
+autoUpdater.on("update-downloaded", () => {
+    if (mainWindow && mainWindow instanceof BrowserWindow) {
+        mainWindow.webContents.send("update-downloaded");
+    }
+});
+
+// Variables Setup
 
 let workspaces = [];
 let config = [];
@@ -129,6 +149,17 @@ const main = async () => {
         });
         mainWindow.webContents.send("main-config-received", config);
     });
+
+    // IPC Setup - Update
+    ipcMain.on("start-update-download", () => {
+        autoUpdater.downloadUpdate();
+    });
+    ipcMain.on("start-update-restart", () => {
+        autoUpdater.quitAndInstall(true, true);
+    });
+
+    // Check Update
+    autoUpdater.checkForUpdatesAndNotify();
 };
 
 /**

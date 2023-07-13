@@ -99,4 +99,19 @@ contextBridge.exposeInMainWorld("electron", {
     openInBrowser(url) {
         ipcRenderer.send("open-in-browser", url);
     },
+    // Update
+    setUpdateAvailableListener(listener) {
+        ipcRenderer.removeAllListeners("update-available");
+        ipcRenderer.on("update-available", listener);
+    },
+    setUpdateDownloadedListener(listener) {
+        ipcRenderer.removeAllListeners("update-downloaded");
+        ipcRenderer.on("update-downloaded", listener);
+    },
+    downloadUpdate() {
+        ipcRenderer.send("start-update-download");
+    },
+    restartUpdate() {
+        ipcRenderer.send("start-update-restart");
+    },
 });
