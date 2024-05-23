@@ -2,6 +2,7 @@ const fs = require("fs");
 const { join } = require("path");
 const { BrowserWindow, app } = require("electron");
 const Config = require("./Config");
+const Logger = require("./Logger");
 
 const path = join(app.getPath("documents"), "PowerBI SE/discoveries.json");
 
@@ -164,8 +165,8 @@ class WorkspaceDiscoverer {
 
             this.window.close();
             return out;
-        } catch (error) {
-            console.log(error);
+        } catch ({ name, message }) {
+            Logger.error(`${name} : ${message}`);
             this.window.close();
             return [];
         }

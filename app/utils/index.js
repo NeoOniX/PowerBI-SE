@@ -1,4 +1,5 @@
 module.exports = {
+    Logger: require("./Logger"),
     Process: require("./Process"),
     Crawler: require("./Crawler"),
     Scraper: require("./Scraper"),

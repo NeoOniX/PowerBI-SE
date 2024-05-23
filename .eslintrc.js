@@ -28,7 +28,7 @@ module.exports = {
         "comma-spacing": ["error", { before: false, after: true }],
         "comma-style": ["error", "last"],
         "eol-last": ["error", "always"],
-        indent: ["error", 4],
+        indent: ["error", 4, { flatTernaryExpressions: true }],
         "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
         "no-trailing-spaces": ["error"],
         semi: ["error", "always", { omitLastInOneLineBlock: true }],

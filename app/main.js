@@ -4,7 +4,7 @@ const pie = require("puppeteer-in-electron");
 const puppeteer = require("puppeteer-core");
 const { join } = require("path");
 const isDev = require("electron-is-dev");
-const { WorkspaceDiscoverer, Crawler, Config, Process, DataReader } = require("./utils");
+const { WorkspaceDiscoverer, Crawler, Config, Process, DataReader, Logger } = require("./utils");
 
 // Remove security warnings
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
@@ -43,6 +43,10 @@ let mainWindow = null;
 const init = async () => {
     // PIE Setup
     await pie.initialize(app);
+
+    // Reset logs
+    Logger.init();
+    Logger.log("[>--- PROGRAM STARTS HERE ---<]");
 };
 
 const main = async () => {
@@ -319,6 +323,10 @@ if (!instanceLock) {
             if (mainWindow.isMinimized()) mainWindow.restore();
             mainWindow.focus();
         }
+    });
+
+    app.once("quit", () => {
+        Logger.log("[>---  PROGRAM ENDS HERE  ---<]");
     });
 
     app.once("ready", main);

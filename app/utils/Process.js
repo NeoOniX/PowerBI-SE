@@ -3,6 +3,7 @@ const Crawler = require("./Crawler");
 const Scraper = require("./Scraper");
 const Uploader = require("./Uploader");
 const Config = require("./Config");
+const Logger = require("./Logger");
 
 /**
  * @class
@@ -61,16 +62,21 @@ class Process {
      * @async
      */
     async setup(pie, browser) {
-        // Puppeteer setup
-        this.page = await pie.getPage(browser, this.window, true);
+        try {
+            // Puppeteer setup
+            this.page = await pie.getPage(browser, this.window, true);
 
-        for (const workspace of this.workspaces) {
-            await Crawler.crawl(this.page, workspace);
-            await Scraper.scrap(this.page, workspace);
-            Uploader.upload(workspace);
+            for (const workspace of this.workspaces) {
+                await Crawler.crawl(this.page, workspace);
+                await Scraper.scrap(this.page, workspace);
+                Uploader.upload(workspace);
+            }
+
+            return this;
+        } catch ({ name, message }) {
+            Logger.error(`${name} : ${message}`);
+            return this;
         }
-
-        return this;
     }
 
     /**

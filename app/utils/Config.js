@@ -1,6 +1,7 @@
 const fs = require("fs");
 const { join } = require("path");
 const { app, dialog } = require("electron");
+const Logger = require("./Logger");
 
 const path = join(app.getPath("documents"), "PowerBI SE");
 
@@ -200,8 +201,8 @@ class Config {
             } else {
                 return JSON.parse(fs.readFileSync(ret.filePaths[0]));
             }
-        } catch (error) {
-            console.log(error);
+        } catch ({ name, message }) {
+            Logger.error(`${name} : ${message}`);
             return [];
         }
     }

@@ -1,5 +1,6 @@
 const fs = require("fs");
 const Config = require("./Config");
+const Logger = require("./Logger");
 const regexpf = require("../shared/regexp").format;
 const { join } = require("path");
 
@@ -22,11 +23,13 @@ class Uploader {
             for (const content of workspace.contents) {
                 if (content.isError) {
                     out_a.push({
+                        WorkspaceId: workspace.id,
                         WorkspaceName: workspace.name,
                         WorkspaceIcon:
                             workspace.icon !== null
                                 ? workspace.icon
                                 : "https://content.powerapps.com/resource/powerbiwfe/images/spinner-PBI-logo.6434e0fca135a582c323.svg",
+                        ContentId: content.id,
                         ContentName: content.name,
                         ContentType: content.type,
                         URL: content.url,
@@ -35,13 +38,16 @@ class Uploader {
                 } else {
                     for (const page of content.pages) {
                         out_c.push({
+                            WorkspaceId: workspace.id,
                             WorkspaceName: workspace.name,
                             WorkspaceIcon:
                                 workspace.icon !== null
                                     ? workspace.icon
                                     : "https://content.powerapps.com/resource/powerbiwfe/images/spinner-PBI-logo.6434e0fca135a582c323.svg",
+                            ContentId: content.id,
                             ContentName: content.name,
                             ContentType: content.type,
+                            PageId: page.id,
                             PageName: page.name,
                             URL: page.url,
                             Tags: page.tags.join(";"),
@@ -124,8 +130,8 @@ class Uploader {
                     "utf8"
                 );
             }
-        } catch (error) {
-            console.log(error);
+        } catch ({ name, message }) {
+            Logger.error(`${workspace.name} > ${name} : ${message}`);
         }
     }
 }

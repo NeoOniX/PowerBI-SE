@@ -1,3 +1,6 @@
+/* eslint-disable indent */
+const Logger = require("./Logger");
+
 const re = /[^a-zA-Z0-9À-ÿ]/gi;
 
 const lookFor = [
@@ -42,6 +45,8 @@ const keywords = scraped => {
  * @async
  */
 const readPage = async (page, content) => {
+    // Read page id
+    const pId = page.url().split("/").slice(-1)[0].split("?")[0];
     // Read tags
     let tags = [content.name];
     //   Read page name
@@ -82,6 +87,7 @@ const readPage = async (page, content) => {
     }
 
     content.pages.push({
+        id: pId,
         name: pName,
         tags: keywords(tags),
         url: page.url(),
@@ -105,6 +111,7 @@ class Scraper {
     static async scrap(page, workspace) {
         for (const c of workspace.contents) {
             try {
+                // Go to content page
                 await page.goto(c.url);
 
                 // Set empty pages if undefined
@@ -116,6 +123,16 @@ class Scraper {
                         timeout: 60000,
                     });
 
+                    // Remove precedent content from history
+                    const history = await page.$$(".top-right-icon.close-button.ng-star-inserted");
+
+                    if (history.length >= 2) {
+                        for (let i = 1; i < history.length; i++) {
+                            await history[i].evaluate(b => b.click());
+                        }
+                    }
+
+                    // Read each page
                     const ps = await page.$$(".mat-list-item-content .itemName");
 
                     if (ps.length === 0) {
@@ -126,21 +143,23 @@ class Scraper {
                             await readPage(page, c);
                         }
                     }
-                } catch (error) {
+                } catch ({ name, message }) {
                     c.isError = true;
                     // Get error message
                     const errorReasonElem = await page.$("h4.mat-dialog-title");
                     c.errorReason = errorReasonElem
                         ? await (await errorReasonElem.getProperty("textContent")).jsonValue()
-                        : "Timed out";
+                        : name === "TimeoutError"
+                        ? "Timed out"
+                        : `Other - ${name}`;
 
-                    console.log(c.errorReason);
+                    Logger.warn(`${c.name} > ${c.errorReason} : ${message}`);
                     continue;
                 }
 
-                console.log(c.name + " - Scrap");
-            } catch (error) {
-                console.log(error);
+                Logger.log(`SCRAP - ${c.name}`);
+            } catch ({ name, message }) {
+                Logger.error(`${c.name} > ${name} : ${message}`);
             }
         }
     }

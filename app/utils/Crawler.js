@@ -1,5 +1,6 @@
 const { BrowserWindow } = require("electron");
 const Config = require("./Config");
+const Logger = require("./Logger");
 
 /**
  * @class
@@ -66,6 +67,7 @@ class Crawler {
                             cont["url"] = await (
                                 await nameCellElem.getProperty("href")
                             ).jsonValue();
+                            cont["url"] = cont["url"].split("?")[0];
                             cont["id"] = cont["url"].split("/");
                             cont["id"] = cont["id"][cont["id"].length - 1];
                             cont["pages"] = [];
@@ -100,8 +102,8 @@ class Crawler {
             } else {
                 await listRows();
             }
-        } catch (error) {
-            console.log(error);
+        } catch ({ name, message }) {
+            Logger.error(`${name} : ${message}`);
         }
     }
 

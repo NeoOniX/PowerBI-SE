@@ -55,5 +55,5 @@
  * @property {string} name Workspace Name
  * @property {string | null} icon Workspace icon URL
  * @property {Array<ContentDsc>} contents Workspace contents
- * @property {import("./Config").Paths} paths Workspace specific paths (complementary to global paths)
+ * @property {Paths} paths Workspace specific paths (complementary to global paths)
  */
