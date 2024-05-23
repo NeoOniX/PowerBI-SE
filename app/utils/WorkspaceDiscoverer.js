@@ -64,15 +64,15 @@ class WorkspaceDiscoverer {
             }
         }
 
-        hasLoaded = false;
-        while (!hasLoaded) {
-            try {
-                await page.waitForSelector("span.pbi-fcl-np.ng-star-inserted", { timeout: 10000 });
-                hasLoaded = true;
-            } catch (e) {
-                if (isClosed) return [];
-            }
-        }
+        // hasLoaded = false;
+        // while (!hasLoaded) {
+        //     try {
+        //         await page.waitForSelector("span.pbi-fcl-np.ng-star-inserted", { timeout: 10000 });
+        //         hasLoaded = true;
+        //     } catch (e) {
+        //         if (isClosed) return [];
+        //     }
+        // }
 
         try {
             //

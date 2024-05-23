@@ -246,7 +246,7 @@ const login = async browser => {
     hasLoaded = false;
     while (!hasLoaded) {
         try {
-            await page.waitForSelector("span.pbi-fcl-np.ng-star-inserted", { timeout: 0 });
+            await page.waitForSelector("button.userInfoButton", { timeout: 0 });
             hasLoaded = true;
         } catch (e) {
             if (isClosed) return;
